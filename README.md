@@ -42,8 +42,8 @@ public interface DropDownListener {
 
     }
 
-![image](https://raw.githubusercontent.com/HunterLyj/DropDownMenu/master/screenshots/device-2017-03-06-115054.png)
 
+![image](https://raw.githubusercontent.com/HunterLyj/DropDownMenu/master/screenshots/device-2017-03-06-115055.png)
 
 ![image](https://raw.githubusercontent.com/HunterLyj/DropDownMenu/master/screenshots/device-2017-03-06-115127.png)
 
