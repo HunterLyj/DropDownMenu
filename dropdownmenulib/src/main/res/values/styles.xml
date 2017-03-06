@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="popupbtn">
+        <attr name="normalBg" format="reference" />
+        <attr name="pressBg" format="reference" />
+        <attr name="normalIcon" format="reference" />
+        <attr name="pressIcon" format="reference" />
+        <attr name="segment" format="integer" />
+        <attr name="pressColor" format="color" />
+        <attr name="normalColor" format="color" />
+    </declare-styleable>
+</resources>
