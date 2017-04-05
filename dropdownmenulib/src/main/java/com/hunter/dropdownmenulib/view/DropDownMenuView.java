@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,10 @@ import static android.graphics.Color.parseColor;
  */
 public class DropDownMenuView extends TextView implements PopupWindow.OnDismissListener {
 
+    public static final int ONE_LIST = 1;//一级联动
+    public static final int TWO_LIST = 2;//两级联动
+    public static final int THREE_LIST = 3;//三级联动
+
     private int mNormalBg;//正常状态下的背景
     private int mPressBg;//按下状态下的背景
     private int mNormalIcon;//正常状态下的图标
@@ -49,6 +54,7 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
     private int mScreenWidth;
     private int mScreenHeight;
     private DropDownListener mDropDownListener;
+    private DropDownCustomViewListener mDropDownCustomViewListener;
     private PopupListAdapter mParentAdapter;
     private PopupListAdapter mSecondSubAdapter;
     private PopupListAdapter mThirdSubAdapter;
@@ -155,15 +161,15 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
             throw new IllegalArgumentException("mDropDownListener is null");
         }
         switch (subTotal) {
-            case 1:
+            case ONE_LIST:
                 mIsHaveSecondSub = false;
                 mIsHaveThirdSub = false;
                 break;
-            case 2:
+            case TWO_LIST:
                 mIsHaveSecondSub = true;
                 mIsHaveThirdSub = false;
                 break;
-            case 3:
+            case THREE_LIST:
                 mIsHaveSecondSub = true;
                 mIsHaveThirdSub = true;
                 break;
@@ -439,6 +445,7 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
         private List mData = new ArrayList<>();
         private int mCurrentPosition = 0;//当前选择位置
         private int mLastPosition = 0;//上一次确定选择的位置
+        private View mCurrentCustomView;
 
 
         public void clearList() {
@@ -469,6 +476,27 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            if (mDropDownCustomViewListener != null) {
+                //有自定义布局
+                if (mIsSecondSub) {
+                    //二级列表
+                    if (mIsThirdSub) {
+                        //三级列表
+                        mCurrentCustomView = mDropDownCustomViewListener.getThirdSubView(getItem(position), mCurrentPosition, position, convertView, parent);
+                    } else {
+                        //二级列表
+                        mCurrentCustomView = mDropDownCustomViewListener.getSecondSubView(getItem(position), mCurrentPosition, position, convertView, parent);
+                    }
+                } else {
+                    //一级列表
+                    mCurrentCustomView = mDropDownCustomViewListener.getParentView(getItem(position), mCurrentPosition, position, convertView, parent);
+                }
+
+                if (mCurrentCustomView != null) {
+                    return mCurrentCustomView;
+                }
+            }
+
             TextView textView;
             if (null == convertView) {
                 textView = new TextView(mContext);
@@ -485,7 +513,7 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
 
             if (mDropDownListener != null) {
                 if (mIsSecondSub) {
-                    //有二级列表
+                    //二级列表
                     if (mIsThirdSub) {
                         //三级列表
                         textView.setText(mDropDownListener.getThirdSubItemName(getItem(position)));
@@ -582,36 +610,64 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
         mDropDownListener = dropDownListener;
     }
 
+    /**
+     * 数据内容接口,需在addList方法前设置
+     * 有自定义SubView，只需处理getSecondSubList、getThirdSubList返回情况，getParentItemName、getSecondSubItemName、getThirdSubItemName可不处理
+     */
     public interface DropDownListener {
         /**
-         * 返回一级Item内容
+         * 返回一级Item展示内容
          */
-        public String getParentItemName(Object object);
+        public String getParentItemName(Object parentObject);
 
         /**
-         * 返回一级Item内容对应的二级列表
+         * 返回一级Item展示内容对应的二级列表
          */
-        public List getSecondSubList(Object object);
+        public List getSecondSubList(Object parentObject);
 
         /**
-         * 返回二级列表对应的Item内容
+         * 返回二级列表对应的Item展示内容
          */
-        public String getSecondSubItemName(Object object);
+        public String getSecondSubItemName(Object secondSubObject);
 
         /**
-         * 返回二级Item内容对应的三级列表
+         * 返回二级Item展示内容对应的三级列表
          */
-        public List getThirdSubList(Object object);
+        public List getThirdSubList(Object secondSubObject);
 
         /**
-         * 返回三级列表对应的Item内容
+         * 返回三级列表对应的Item展示内容
          */
-        public String getThirdSubItemName(Object object);
+        public String getThirdSubItemName(Object thirdSubObject);
 
         /**
          * 返回选择内容，后两级内容可能为空，需自行判断
          */
         public void selectData(Object parentObject, Object secondSubObject, Object thirdSubObject);
 
+    }
+
+    public void setDropDownCustomViewListener(DropDownCustomViewListener dropDownCustomViewListener) {
+        mDropDownCustomViewListener = dropDownCustomViewListener;
+    }
+
+    /**
+     * 布局内容自定义接口，自定义各级展示布局
+     */
+    public interface DropDownCustomViewListener {
+        /**
+         * 返回一级Item布局
+         */
+        public View getParentView(Object parentObject, int currentPosition, int position, View convertView, ViewGroup parent);
+
+        /**
+         * 返回二级Item布局
+         */
+        public View getSecondSubView(Object secondSubObject, int currentPosition, int position, View convertView, ViewGroup parent);
+
+        /**
+         * 返回三级Item布局
+         */
+        public View getThirdSubView(Object thirdSubObject, int currentPosition, int position, View convertView, ViewGroup parent);
     }
 }

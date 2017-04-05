@@ -1,14 +1,21 @@
 package com.hunter.dropdownmenu;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.hunter.dropdownmenulib.view.DropDownMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hunter.dropdownmenulib.view.DropDownMenuView.*;
+import static com.hunter.dropdownmenulib.view.DropDownMenuView.DropDownListener;
+import static com.hunter.dropdownmenulib.view.DropDownMenuView.dip2px;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,34 +62,34 @@ public class MainActivity extends AppCompatActivity {
 
         mDropDownMenuView.setDropDownListener(new DropDownListener() {
             @Override
-            public String getParentItemName(Object object) {
-                return ((OneItem) object).name;
+            public String getParentItemName(Object parentObject) {
+                return ((OneItem) parentObject).name;
             }
 
             @Override
-            public List getSecondSubList(Object object) {
-                if (object == null) {
+            public List getSecondSubList(Object parentObject) {
+                if (parentObject == null) {
                     return null;
                 }
-                return ((OneItem) object).list;
+                return ((OneItem) parentObject).list;
             }
 
             @Override
-            public String getSecondSubItemName(Object object) {
-                return ((TwoItem) object).name;
+            public String getSecondSubItemName(Object secondSubObject) {
+                return ((TwoItem) secondSubObject).name;
             }
 
             @Override
-            public List getThirdSubList(Object object) {
-                if (object == null) {
+            public List getThirdSubList(Object secondSubObject) {
+                if (secondSubObject == null) {
                     return null;
                 }
-                return ((TwoItem) object).list;
+                return ((TwoItem) secondSubObject).list;
             }
 
             @Override
-            public String getThirdSubItemName(Object object) {
-                return ((ThreeItem) object).name;
+            public String getThirdSubItemName(Object thirdSubObject) {
+                return ((ThreeItem) thirdSubObject).name;
             }
 
             @Override
@@ -101,7 +108,44 @@ public class MainActivity extends AppCompatActivity {
                 mDropDownMenuView.setText(stringBuffer.toString());
             }
         });
-        mDropDownMenuView.addList(list, 3);
+        mDropDownMenuView.addList(list, DropDownMenuView.THREE_LIST);
+        mDropDownMenuView.setDropDownCustomViewListener(new DropDownMenuView.DropDownCustomViewListener() {
+            @Override
+            public View getParentView(Object parentObject, int currentPosition, int position, View convertView, ViewGroup parent) {
+                TextView textView;
+                if (null == convertView) {
+                    textView = new TextView(MainActivity.this);
+                    textView.setTextSize(15);
+                    textView.setPadding(dip2px(MainActivity.this, 20), 0, dip2px(MainActivity.this, 10), 0);
+                    textView.setGravity(Gravity.CENTER_VERTICAL);
+                    textView.setSingleLine();
+                    ListView.LayoutParams layoutParams = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip2px(MainActivity.this, 44));
+                    textView.setLayoutParams(layoutParams);
+                    convertView = textView;
+                } else {
+                    textView = (TextView) convertView;
+                }
+
+                textView.setText(((OneItem) parentObject).name);
+
+                if (currentPosition == position) {
+                    textView.setTextColor(Color.BLUE);
+                } else {
+                    textView.setTextColor(Color.GREEN);
+                }
+                return convertView;
+            }
+
+            @Override
+            public View getSecondSubView(Object secondSubObject, int currentPosition, int position, View convertView, ViewGroup parent) {
+                return null;
+            }
+
+            @Override
+            public View getThirdSubView(Object thirdSubObject, int currentPosition, int position, View convertView, ViewGroup parent) {
+                return null;
+            }
+        });
     }
 
 
