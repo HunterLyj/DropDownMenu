@@ -647,6 +647,87 @@ public class DropDownMenuView extends TextView implements PopupWindow.OnDismissL
 
     }
 
+    /**
+     * 一级选择抽象类
+     */
+    public static abstract class DropDownListenerOneImpl implements DropDownListener {
+        @Override
+        public abstract String getParentItemName(Object parentObject);
+
+        @Override
+        public List getSecondSubList(Object parentObject) {
+            return null;
+        }
+
+        @Override
+        public String getSecondSubItemName(Object secondSubObject) {
+            return null;
+        }
+
+        @Override
+        public List getThirdSubList(Object secondSubObject) {
+            return null;
+        }
+
+        @Override
+        public String getThirdSubItemName(Object thirdSubObject) {
+            return null;
+        }
+
+        @Override
+        public abstract void selectData(Object parentObject, Object secondSubObject, Object thirdSubObject);
+    }
+
+    /**
+     * 两级选择抽象类
+     */
+    public static abstract class DropDownListenerTwoImpl implements DropDownListener {
+        @Override
+        public abstract String getParentItemName(Object parentObject);
+
+        @Override
+        public abstract List getSecondSubList(Object parentObject);
+
+        @Override
+        public abstract String getSecondSubItemName(Object secondSubObject);
+
+        @Override
+        public List getThirdSubList(Object secondSubObject) {
+            return null;
+        }
+
+        @Override
+        public String getThirdSubItemName(Object thirdSubObject) {
+            return null;
+        }
+
+        @Override
+        public abstract void selectData(Object parentObject, Object secondSubObject, Object thirdSubObject);
+    }
+
+    /**
+     * 三级选择抽象类
+     */
+    public static abstract class DropDownListenerThreeImpl implements DropDownListener {
+        @Override
+        public abstract String getParentItemName(Object parentObject);
+
+        @Override
+        public abstract List getSecondSubList(Object parentObject);
+
+        @Override
+        public abstract String getSecondSubItemName(Object secondSubObject);
+
+        @Override
+        public abstract List getThirdSubList(Object secondSubObject);
+
+        @Override
+        public abstract String getThirdSubItemName(Object thirdSubObject);
+
+        @Override
+        public abstract void selectData(Object parentObject, Object secondSubObject, Object thirdSubObject);
+    }
+
     public void setDropDownCustomViewListener(DropDownCustomViewListener dropDownCustomViewListener) {
         mDropDownCustomViewListener = dropDownCustomViewListener;
     }

@@ -14,7 +14,7 @@ import com.hunter.dropdownmenulib.view.DropDownMenuView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hunter.dropdownmenulib.view.DropDownMenuView.DropDownListener;
+import static com.hunter.dropdownmenulib.view.DropDownMenuView.THREE_LIST;
 import static com.hunter.dropdownmenulib.view.DropDownMenuView.dip2px;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         list.get(1).list.get(0).list = null;
         list.get(1).list.get(0).name = "全部";
 
-        mDropDownMenuView.setDropDownListener(new DropDownListener() {
+        mDropDownMenuView.setDropDownListener(new DropDownMenuView.DropDownListener() {
             @Override
             public String getParentItemName(Object parentObject) {
                 return ((OneItem) parentObject).name;
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 mDropDownMenuView.setText(stringBuffer.toString());
             }
         });
-        mDropDownMenuView.addList(list, DropDownMenuView.THREE_LIST);
+        mDropDownMenuView.addList(list, THREE_LIST);
         mDropDownMenuView.setDropDownCustomViewListener(new DropDownMenuView.DropDownCustomViewListener() {
             @Override
             public View getParentView(Object parentObject, int currentPosition, int position, View convertView, ViewGroup parent) {
@@ -146,14 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         });
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
     }
 
     class OneItem {
